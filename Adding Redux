@@ -122,6 +122,8 @@ const dispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps, dispatchToProps)(Screen);
 
+## Para se ter acesso a name e email, basta usar como props: {props.name} e {props.email}
+
 _________________________________________________________________________
 _________________________________________________________________________
 
