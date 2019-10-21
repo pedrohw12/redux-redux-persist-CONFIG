@@ -1,0 +1,51 @@
+REDUX PERSIST:
+
+Resumo: Redux-Persist permite criar reducers que ficam salvos mesmo após a aplicação ser fechada.
+        Para o funcionamento, é necessário a utilização em conjunto com o AsyncStorage;
+        Para adicionar o redux-persist + AsyncStorage, basta editar dois arquivos: o Store.js e o arquivo index.js
+
+yarn add redux-persist --save
+yarn add @react-native-community/async-storage --save
+
+No arquivo Store.js(src/Store.js):
+
+import { createStore } from 'redux';
+import AsyncStorage from '@react-native-community/async-storage';
+import { persistStore, persistReducer } from 'redux-persist';
+
+import Reducers from './reducers/index';
+
+const persistedReducer = persistReducer({
+  key: 'root',
+  storage:AsyncStorage,
+  whitelist: ['userReducer'],
+  //blacklist: [],
+}, Reducers);
+
+const store = createStore(persistedReducer);
+let persistor = persistStore(store);
+
+export {store, persistor};
+
+________________________________________________________________________________________
+________________________________________________________________________________________
+
+No arquivo index.js(src/index.js):
+
+import React from 'react';
+import { PersistGate } from 'redux-persist/es/integration/react';
+import { createAppContainer } from 'react-navigation';
+import { Provider } from 'react-redux';
+import {store, persistor} from '../src/Store';
+
+import MainStack from './navigators/MainStack';
+
+const AppContainer = createAppContainer(MainStack);
+
+export default () => (
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor} >
+      <AppContainer />
+    </PersistGate>
+  </Provider>
+);
