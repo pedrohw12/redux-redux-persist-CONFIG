@@ -1,0 +1,134 @@
+RESUMO:
+- Cria no index.js do app, um provider e importa a store dentro do provider
+- Cria a store na pagina src (src/Store.js)
+- Dentro da store se importa os reducers
+- Na pasta src/reducers contem todos os reducers criados
+- Na pasta reducers contem a index.js que contem o combineReducers (src/reducers/index.js)
+
+1 PASSO:
+
+NO ARQUIVO PRINCIPAL ( index.js - src/index.js) :
+
+import React from 'react';
+import { createAppContainer } from 'react-navigation';
+import { Provider } from 'react-redux';
+import Store from '../src/Store';
+
+import MainStack from './navigators/MainStack';
+
+const AppContainer = createAppContainer(MainStack);
+
+export default () => (
+  <Provider store={Store}>
+    <AppContainer />
+  </Provider>
+);
+
+__________________________________________________________________________
+___________________________________________________________________________
+
+2 PASSO:
+
+Criar um arquivo chamado Store.js dentro da pasta src(src/Store.js):
+
+import { createStore } from 'redux';
+
+import Reducers from './reducers/index';
+
+const store = createStore(Reducers);
+
+export default store;
+
+____________________________________________________________________
+_____________________________________________________________________
+
+
+3 PASSO:
+
+Criar uma pasta chamada reducers contendo um arquivo index.js(src/reducers/index.js):
+
+import { combineReducers } from 'redux';
+import userReducer from './userReducer';
+
+export default combineReducers({
+  userReducer
+});
+
+_______________________________________________________________________
+________________________________________________________________________
+
+4 PASSO:
+
+No index.js(src/index.js) :
+
+import Store from '../src/Store';
+
+No provider ---> <Provider store={Store} >
+
+export default () => (
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor} >
+      <AppContainer />
+    </PersistGate>
+  </Provider>
+);
+
+__________________________________________________________________________
+___________________________________________________________________________
+
+
+5 PASSO - CRIANDO UM REDUCER:
+
+Dentro da pasta de reducers, criar um arquivo userReducer.js (src/reducers/userReducer.js):
+
+const initialState = {
+  name: '',
+  email: ''
+};
+
+export default (state = initialState, action) => {
+  
+  switch(action.type) {
+    case 'SET_NAME':
+      return {...state, name:action.payload.name};
+      break;
+    case 'SET_EMAIL':
+      return {...state, email:action.payload.email};
+      break;  
+  }
+  
+  return state;
+};
+
+
+_____________________________________________________________________
+_______________________________________________________________________
+
+DANDO UM CONNECT:
+import { connect } from 'react-redux';
+
+const mapStateToProps = (state) => {
+  return {
+    name:state.userReducer.name,
+    email:state.userReducer.email
+  };
+};
+
+const dispatchToProps = (dispatch) => {
+  return {
+    setName: (name)=> dispatch({type: 'SET_NAME', payload: {name}})
+  };
+};
+
+export default connect(mapStateToProps, dispatchToProps)(Screen);
+
+_________________________________________________________________________
+_________________________________________________________________________
+
+
+
+
+
+
+
+
